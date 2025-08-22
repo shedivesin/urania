@@ -25,12 +25,8 @@ function print(longitude) {
 }
 
 function update(date) {
-  const planets = urania(date);
-
-  for(const planet in planets) {
-    if(Object.hasOwn(planets, planet)) {
-      document.getElementById(planet).innerHTML = print(planets[planet]);
-    }
+  for(const [planet, longitude] of Object.entries(urania(date))) {
+    document.getElementById(planet).innerHTML = print(longitude);
   }
 }
 
