@@ -1,6 +1,10 @@
-// Convert a date (in milliseconds) to J2000 centuries.
+// Convert a date (in milliseconds) to J2000 days or centuries.
+function j2000(date) {
+  return (date - 946728000000) / 86400000;
+}
+
 function j2000c(date) {
-  return (date - 946728000000) / 3155760000000;
+  return j2000(date) / 36525;
 }
 
 
@@ -48,10 +52,16 @@ function add(a, b) {
 }
 
 
+// atan2 to degrees, 0..360
+function atan2(y, x) {
+  return Math.atan2(-y, -x) * (180 / Math.PI) + 180;
+}
+
+
 // Convert Cartesian coordinates to longitude.
 // FIXME: We could compute latitude and distance here, too, if we wanted.
 function longitude(v) {
-  return Math.atan2(-v[1], -v[0]) * 180 / Math.PI + 180;
+  return Math.atan2(-v[1], -v[0]) * (180 / Math.PI) + 180;
 }
 
 
@@ -59,7 +69,7 @@ function longitude(v) {
 // J. L. Simon et al. "Numerical expressions for precession formulae and
 // mean elements for the Moon and the planets." Astronomy and Astrophysics
 // 282 (1994): 663-683.
-function urania(date) {
+function planets(date) {
   const t = j2000c(date);
 
   const sun = kepler(
@@ -197,5 +207,27 @@ function urania(date) {
         ),
       ),
     ),
+  };
+}
+
+function angles(date, lat, lon) {
+  const t = j2000(date);
+
+  // https://aa.usno.navy.mil/faq/GAST
+  const lst = 4.8949613 + 6.3003880989482 * t + lon * (Math.PI / 180);
+  const sin_lst = Math.sin(lst);
+  const cos_lst = Math.cos(lst);
+  const ε = 0.409093 - 0.000000007 * t;
+  const sin_ε = Math.sin(ε);
+  const cos_ε = Math.cos(ε);
+
+  return {
+    // https://radixpro.com/a4a-start/the-ascendant/
+    ascendant: atan2(
+      cos_lst,
+      -(sin_ε * Math.tan(lat * (Math.PI / 180)) + cos_ε * sin_lst),
+    ),
+    // https://radixpro.com/a4a-start/medium-coeli/
+    midheaven: atan2(sin_lst, cos_lst * cos_ε),
   };
 }

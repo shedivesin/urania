@@ -1,6 +1,7 @@
 <!doctype html>
 <meta charset=utf-8>
 <title>Urania</title>
+<style>td{line-height:1rem;padding-right:1em}tr>:last-child{padding-right:0}</style>
 
 <table>
 <tr><td>Sun<td id=sun>
@@ -10,6 +11,8 @@
 <tr><td>Mars<td id=mars>
 <tr><td>Jupiter<td id=jupiter>
 <tr><td>Saturn<td id=saturn>
+<tr><td>Ascendant<td id=ascendant>
+<tr><td>Midheaven<td id=midheaven>
 </table>
 
 <script src=urania.js></script>
@@ -24,11 +27,14 @@ function print(longitude) {
     minute.toString().padStart(2, "0");
 }
 
-function update(date) {
-  for(const [planet, longitude] of Object.entries(urania(date))) {
+function update(date, lat, lon) {
+  for(const [planet, longitude] of Object.entries(planets(date))) {
     document.getElementById(planet).innerHTML = print(longitude);
+  }
+  for(const [angle, longitude] of Object.entries(angles(date, lat, lon))) {
+    document.getElementById(angle).innerHTML = print(longitude);
   }
 }
 
-update(Date.now());
+update(Date.now(), 39.7, -105.0);
 </script>
