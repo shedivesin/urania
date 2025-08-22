@@ -1,7 +1,6 @@
 <!doctype html>
 <meta charset=utf-8>
 <title>Urania</title>
-<script src=urania.mjs></script>
 
 <table>
 <tr><td>Sun<td id=sun>
@@ -13,6 +12,7 @@
 <tr><td>Saturn<td id=saturn>
 </table>
 
+<script src=urania.js></script>
 <script>
 function print(longitude) {
   const t = Math.round(longitude * 60) % 21600;
