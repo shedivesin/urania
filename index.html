@@ -1,0 +1,38 @@
+<!doctype html>
+<meta charset=utf-8>
+<title>Urania</title>
+<script src=urania.mjs></script>
+
+<table>
+<tr><td>Sun<td id=sun>
+<tr><td>Moon<td id=moon>
+<tr><td>Mercury<td id=mercury>
+<tr><td>Venus<td id=venus>
+<tr><td>Mars<td id=mars>
+<tr><td>Jupiter<td id=jupiter>
+<tr><td>Saturn<td id=saturn>
+</table>
+
+<script>
+function print(longitude) {
+  const t = Math.round(longitude * 60) % 21600;
+  const minute = t % 60;
+  const degree = Math.floor(t / 60) % 30;
+  const zodiac = Math.floor(t / 1800);
+  return degree.toString().padStart(2, "0") +
+    String.fromCharCode(8202, 9800 + zodiac, 65038, 8202) +
+    minute.toString().padStart(2, "0");
+}
+
+function update(date) {
+  const planets = urania(date);
+
+  for(const planet in planets) {
+    if(Object.hasOwn(planets, planet)) {
+      document.getElementById(planet).innerHTML = print(planets[planet]);
+    }
+  }
+}
+
+update(Date.now());
+</script>
